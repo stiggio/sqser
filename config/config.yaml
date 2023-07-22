@@ -15,7 +15,6 @@ filters:
   - name: substringBlockList
     values:
       - developer # no dev queues should be returned :)
-      - webflow
   - name: slackChannelId
     values:
       - name: staging
