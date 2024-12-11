@@ -14,9 +14,8 @@ filters:
       - dlq
   - name: substringBlockList
     values:
-      - developer # no dev queues should be returned :)
-      - webflow
-      - miro
+      - persistent-cache-webflow
+      - persistent-cache-miro
   - name: slackChannelId
     values:
       - name: staging
