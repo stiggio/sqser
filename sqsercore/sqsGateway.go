@@ -60,10 +60,27 @@ func (sg *SQSGateway) getItem(queueUrl string) (message *sqs.Message, err error)
 }
 
 func (sg *SQSGateway) getQueues() (*sqs.ListQueuesOutput, error) {
-	lo := sqs.ListQueuesInput{
-		MaxResults: aws.Int64(100),
+	var allQueues sqs.ListQueuesOutput
+	var nextToken *string
+
+	for {
+		lo := sqs.ListQueuesInput{
+			MaxResults: aws.Int64(100),
+			NextToken:  nextToken,
+		}
+		resp, err := sg.sqsService.ListQueues(&lo)
+		if err != nil {
+			return nil, err
+		}
+
+		allQueues.QueueUrls = append(allQueues.QueueUrls, resp.QueueUrls...)
+		if resp.NextToken == nil {
+			break
+		}
+		nextToken = resp.NextToken
 	}
-	return sg.sqsService.ListQueues(&lo)
+
+	return &allQueues, nil
 }
 
 func (sg *SQSGateway) getQueueAttributes(queueUrl string) (*sqs.GetQueueAttributesOutput, error) {
